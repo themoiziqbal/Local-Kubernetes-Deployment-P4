@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Chatbot - Smart Todo Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-animation">
+        <div class="gradient-blob blob1"></div>
+        <div class="gradient-blob blob2"></div>
+        <div class="gradient-blob blob3"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">🤖</div>
+                    <div class="logo-text">
+                        <h1>AI Voice Assistant</h1>
+                        <p>Smart Todo Management</p>
+                    </div>
+                </div>
+
+                <!-- Language Selector -->
+                <div class="controls-section">
+                    <div class="language-control">
+                        <label for="language-select">
+                            <span class="label-icon">🌍</span>
+                            <span class="label-text">Language</span>
+                        </label>
+                        <select id="language-select" class="select-dropdown">
+                            <option value="en">English</option>
+                            <option value="ur">Urdu (اردو)</option>
+                            <option value="hi">Hindi (हिंदी)</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="ar">العربية</option>
+                        </select>
+                    </div>
+                    <button id="translate-btn" class="btn-translate" title="Translate tasks">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">Translate</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="section-header">
+                    <h2>💬 Chat Assistant</h2>
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span>Online</span>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chat-history" class="chat-history">
+                    <div class="message bot-message">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">AI Assistant</span>
+                                <span class="message-time">Just now</span>
+                            </div>
+                            <div class="message-text">
+                                Hello! I'm your AI-powered voice assistant. You can speak or type to manage your tasks. Try saying "Add buy groceries" or click the microphone button!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Visualizer -->
+                <div id="voice-visualizer" class="voice-visualizer hidden">
+                    <div class="visualizer-bars">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <p class="visualizer-text">Listening...</p>
+                </div>
+
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="user-input"
+                            class="chat-input"
+                            placeholder="Type your message or click 🎤 to speak..."
+                            autocomplete="off"
+                        />
+                        <button id="voice-btn" class="btn-voice" title="Click to speak">
+                            <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
+                            <span class="voice-pulse"></span>
+                        </button>
+                        <button id="send-btn" class="btn-send">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="voice-status" class="voice-status"></div>
+                </div>
+            </div>
+
+            <!-- Todo Section -->
+            <div class="todo-section">
+                <div class="section-header">
+                    <h2>📝 Your Tasks</h2>
+                    <div class="task-count">
+                        <span id="task-count">0</span> tasks
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn primary" id="add-task-btn">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">Add Task</span>
+                    </button>
+                    <button class="action-btn secondary" id="show-tasks-btn">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-text">Show All</span>
+                    </button>
+                    <button class="action-btn info" id="read-tasks-btn" title="Read tasks aloud">
+                        <span class="btn-icon">🔊</span>
+                        <span class="btn-text">Read Tasks</span>
+                    </button>
+                    <button class="action-btn danger" id="clear-completed-btn">
+                        <span class="btn-icon">✓</span>
+                        <span class="btn-text">Clear Done</span>
+                    </button>
+                </div>
+
+                <!-- Todo List -->
+                <div class="todo-list-wrapper">
+                    <ul id="todo-items" class="todo-list">
+                        <li class="empty-state">
+                            <div class="empty-icon">📭</div>
+                            <p>No tasks yet</p>
+                            <small>Add your first task to get started!</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=5"></script>
+</body>
+</html>
