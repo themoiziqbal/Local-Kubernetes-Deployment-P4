@@ -35,7 +35,7 @@ echo.
 echo BACKEND (Railway^):
 echo   1. Go to https://railway.app
 echo   2. Create new project -^> Deploy from GitHub
-echo   3. Select repository: MoizIqbal/ChatbotTodoApp
+echo   3. Select repository: themoizIqbal/ChatbotTodoApp
 echo   4. Set environment variable: OPENAI_API_KEY=your_api_key_here
 echo   5. Railway will auto-detect Dockerfile and deploy
 echo   6. Note your Railway URL ^(e.g., https://your-app.railway.app^)
