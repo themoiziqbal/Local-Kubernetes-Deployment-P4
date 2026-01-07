@@ -1,0 +1,28 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: chatbot-statestore
+  namespace: default
+spec:
+  type: state.redis
+  version: v1
+  metadata:
+    # Redis host address
+    - name: redisHost
+      value: "redis-master.default.svc.cluster.local:6379"
+    # Redis password from secret
+    - name: redisPassword
+      secretKeyRef:
+        name: redis
+        key: redis-password
+    # Enable TLS
+    - name: enableTLS
+      value: "false"
+    # Key prefix for state store
+    - name: keyPrefix
+      value: "chatbot"
+    # Connection pooling
+    - name: maxRetries
+      value: "3"
+    - name: maxRetryBackoff
+      value: "2s"

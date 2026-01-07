@@ -1,0 +1,27 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: chatbot-kafka-pubsub
+  namespace: default
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+    # Kafka broker addresses - Update with your Kafka cluster address
+    - name: brokers
+      value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    # Consumer group ID
+    - name: consumerGroup
+      value: "chatbot-consumer-group"
+    # Client ID
+    - name: clientId
+      value: "chatbot-todo-app"
+    # Authentication type (none for local development, sasl for production)
+    - name: authType
+      value: "none"
+    # Maximum message size in bytes
+    - name: maxMessageBytes
+      value: "1048576"  # 1MB
+    # Consumer fetch default size
+    - name: consumeFetchDefault
+      value: "1048576"

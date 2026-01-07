@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Intent Classifier Agent Tool Schema",
+  "description": "MCP tool schema for Intent Classification Agent - classifies user intent into CRUD operations",
+  "tool_name": "classify_intent",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "user_input": {
+        "type": "string",
+        "description": "Natural language user input (already translated to English if needed)"
+      },
+      "conversation_context": {
+        "type": "object",
+        "description": "Recent conversation exchanges for context-aware classification",
+        "properties": {
+          "last_exchanges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "user": {"type": "string"},
+                "system": {"type": "string"}
+              }
+            },
+            "maxItems": 5
+          },
+          "referenced_tasks": {
+            "type": "array",
+            "items": {"type": "integer"},
+            "description": "Recently referenced task IDs"
+          }
+        }
+      }
+    },
+    "required": ["user_input"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "intent": {
+        "type": "string",
+        "enum": ["create", "read", "update", "patch", "delete", "clarify", "settings", "unknown"],
+        "description": "Classified user intent"
+      },
+      "confidence": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "description": "Confidence score (0-1)"
+      },
+      "extracted_entities": {
+        "type": "object",
+        "description": "Extracted parameters from user input",
+        "properties": {
+          "task_id": {
+            "type": ["integer", "null"],
+            "description": "Explicit task ID mentioned, or null if implicit reference"
+          },
+          "task_description": {
+            "type": ["string", "null"],
+            "description": "Task description for create/update operations"
+          },
+          "due_date": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Extracted due date (parsed to ISO 8601)"
+          },
+          "priority": {
+            "type": ["string", "null"],
+            "enum": ["low", "medium", "high", null],
+            "description": "Extracted priority level"
+          },
+          "status": {
+            "type": ["string", "null"],
+            "enum": ["pending", "in-progress", "completed", null],
+            "description": "Extracted status for update/patch"
+          },
+          "tags": {
+            "type": ["array", "null"],
+            "items": {"type": "string"},
+            "description": "Extracted tags"
+          },
+          "filter_criteria": {
+            "type": ["object", "null"],
+            "description": "Filter criteria for read operations (e.g., 'show tasks for today')"
+          }
+        }
+      },
+      "clarification_needed": {
+        "type": "boolean",
+        "description": "Whether clarifying question is needed (true if confidence <0.7)"
+      },
+      "clarification_question": {
+        "type": ["string", "null"],
+        "description": "Suggested clarifying question to ask user"
+      }
+    },
+    "required": ["intent", "confidence", "extracted_entities"]
+  },
+  "examples": [
+    {
+      "input": {
+        "user_input": "add a task to call mom tomorrow"
+      },
+      "output": {
+        "intent": "create",
+        "confidence": 0.95,
+        "extracted_entities": {
+          "task_description": "call mom",
+          "due_date": "2025-12-14T00:00:00",
+          "priority": null,
+          "status": null,
+          "tags": []
+        },
+        "clarification_needed": false
+      }
+    },
+    {
+      "input": {
+        "user_input": "delete it",
+        "conversation_context": {
+          "referenced_tasks": [5, 3]
+        }
+      },
+      "output": {
+        "intent": "delete",
+        "confidence": 0.9,
+        "extracted_entities": {
+          "task_id": 5
+        },
+        "clarification_needed": false
+      }
+    },
+    {
+      "input": {
+        "user_input": "do something"
+      },
+      "output": {
+        "intent": "unknown",
+        "confidence": 0.2,
+        "extracted_entities": {},
+        "clarification_needed": true,
+        "clarification_question": "What would you like me to do? You can add, view, update, or delete tasks."
+      }
+    }
+  ]
+}

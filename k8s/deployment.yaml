@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-todo-app
+  labels:
+    app: chatbot-todo-app
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chatbot-todo-app
+  template:
+    metadata:
+      labels:
+        app: chatbot-todo-app
+        tier: backend
+    spec:
+      containers:
+        - name: chatbot-todo-app
+          image: chatbot-todo-app:1.0
+          imagePullPolicy: Never  # For local Minikube deployment
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: PORT
+              value: "8000"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: chatbot-secrets
+                  key: openai-api-key
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: chatbot-data-pvc

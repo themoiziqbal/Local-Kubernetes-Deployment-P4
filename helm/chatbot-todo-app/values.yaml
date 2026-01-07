@@ -1,0 +1,53 @@
+replicaCount: 2
+
+image:
+  repository: chatbot-todo-app
+  tag: "1.0"
+  pullPolicy: Never  # For local Minikube deployment
+
+service:
+  type: NodePort
+  port: 8000
+  nodePort: 30080
+
+containerPort: 8000
+
+# OpenAI API Key - You MUST set this before deploying
+# Option 1: Set in this file (not recommended for production)
+# Option 2: Override with --set openaiApiKey=YOUR_KEY during helm install
+openaiApiKey: "your-openai-api-key-here"
+
+# Resource limits
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# Persistent storage for SQLite database
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: standard
+  accessMode: ReadWriteOnce
+
+# Health check settings
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Environment variables
+env:
+  PORT: "8000"
